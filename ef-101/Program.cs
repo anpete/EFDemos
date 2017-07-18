@@ -1,13 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
-namespace EFCore101
+namespace Demos
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
             using (var db = new BloggingContext())
             {
@@ -42,7 +42,7 @@ namespace EFCore101
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
-                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.EFCore101;Trusted_Connection=True;")
+                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.EF101;Trusted_Connection=True;")
                 .UseLoggerFactory(new LoggerFactory().AddConsole());
         }
     }

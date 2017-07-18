@@ -1,14 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
-namespace FromSql
+namespace Demos
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
             SetupDatabase();
 
@@ -35,7 +35,8 @@ namespace FromSql
             {
                 if (db.Database.EnsureCreated())
                 {
-                    db.Database.ExecuteSqlCommand("CREATE FUNCTION [dbo].[SearchBlogs] (@term nvarchar(200)) RETURNS TABLE AS RETURN (SELECT * FROM dbo.Blogs WHERE Url LIKE '%' + @term + '%')");
+                    db.Database.ExecuteSqlCommand(
+                        "CREATE FUNCTION [dbo].[SearchBlogs] (@term nvarchar(200)) RETURNS TABLE AS RETURN (SELECT * FROM dbo.Blogs WHERE Url LIKE '%' + @term + '%')");
 
                     db.Blogs.Add(new Blog { Url = "http://sample.com/blogs/fish" });
                     db.Blogs.Add(new Blog { Url = "http://sample.com/blogs/catfish" });
@@ -54,7 +55,7 @@ namespace FromSql
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
-                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.FromSql;Trusted_Connection=True;")
+                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.StringInterpolation;Trusted_Connection=True;")
                 .UseLoggerFactory(new LoggerFactory().AddConsole());
         }
     }

@@ -1,14 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Performance.EFCore;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Performance.EFCore;
 
-namespace CompiledQueries
+namespace Demos
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
             // Warmup
             using (var db = new AdventureWorksContext())
@@ -17,7 +17,7 @@ namespace CompiledQueries
             }
 
             RunTest(
-                regularTest: (accountNumbers) =>
+                accountNumbers =>
                 {
                     using (var db = new AdventureWorksContext())
                     {
@@ -27,7 +27,7 @@ namespace CompiledQueries
                         }
                     }
                 },
-                compiledTest: (accountNumbers) =>
+                accountNumbers =>
                 {
                     var query = EF.CompileQuery((AdventureWorksContext db, string id) =>
                         db.Customers.Single(c => c.AccountNumber == id));
@@ -64,7 +64,7 @@ namespace CompiledQueries
         {
             var accountNumbers = new string[count];
 
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 accountNumbers[i] = "AW" + (i + 1).ToString().PadLeft(8, '0');
             }

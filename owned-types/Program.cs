@@ -1,13 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
 
-namespace OwnedEntities
+namespace Demos
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
             RecreateDatabase();
 
@@ -31,7 +30,7 @@ namespace OwnedEntities
                             PostalOrZipCode = "98052",
                             StateOrProvince = "WA",
                             Country = usa
-                        },
+                        }
                     },
                     PhysicalAddress = new Address
                     {
@@ -43,7 +42,7 @@ namespace OwnedEntities
                             PostalOrZipCode = "98101",
                             StateOrProvince = "WA",
                             Country = usa
-                        },
+                        }
                     }
                 });
 
@@ -76,7 +75,7 @@ namespace OwnedEntities
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
-                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.OwnedEntities;Trusted_Connection=True;")
+                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.OwnedTypes;Trusted_Connection=True;")
                 .UseLoggerFactory(new LoggerFactory().AddConsole());
         }
 

@@ -1,16 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Logging;
+
 #pragma warning disable 169
 
-namespace EntityFilters.MultiTenant
+namespace Demos
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
             SetupDatabase();
 
@@ -22,7 +23,8 @@ namespace EntityFilters.MultiTenant
 
                 foreach (var blog in blogs)
                 {
-                    Console.WriteLine($"{blog.Url.PadRight(33)} [Tenant: {db.Entry(blog).Property("TenantId").CurrentValue}]");
+                    Console.WriteLine(
+                        $"{blog.Url.PadRight(33)} [Tenant: {db.Entry(blog).Property("TenantId").CurrentValue}]");
 
                     foreach (var post in blog.Posts)
                     {
@@ -70,10 +72,10 @@ namespace EntityFilters.MultiTenant
                         {
                             Url = "http://sample.com/blogs/catfish",
                             Posts = new List<Post>
-                        {
-                            new Post { Title = "Catfish care 101" },
-                            new Post { Title = "History of the catfish name" },
-                        }
+                            {
+                                new Post { Title = "Catfish care 101" },
+                                new Post { Title = "History of the catfish name" }
+                            }
                         });
 
                         jeff_db.SaveChanges();
@@ -86,7 +88,6 @@ namespace EntityFilters.MultiTenant
                         .ForEach(p => db.Posts.Remove(p));
 
                     db.SaveChanges();
-
                 }
             }
         }
@@ -107,15 +108,17 @@ namespace EntityFilters.MultiTenant
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
-                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.EntityFilters;Trusted_Connection=True;ConnectRetryCount=0;")
+                .UseSqlServer(
+                    @"Server=(localdb)\mssqllocaldb;Database=Demo.QueryFilters;Trusted_Connection=True;ConnectRetryCount=0;")
                 .UseLoggerFactory(new LoggerFactory().AddConsole());
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-           modelBuilder.Entity<Post>().HasQueryFilter(p => !p.IsDeleted);
+            modelBuilder.Entity<Post>().HasQueryFilter(p => !p.IsDeleted);
 
-            modelBuilder.Entity<Blog>().Property<string>("TenantId").HasField("_tenantId").Metadata.AfterSaveBehavior = PropertySaveBehavior.Ignore;
+            modelBuilder.Entity<Blog>().Property<string>("TenantId").HasField("_tenantId").Metadata.AfterSaveBehavior =
+                PropertySaveBehavior.Ignore;
             modelBuilder.Entity<Blog>().HasQueryFilter(b => EF.Property<string>(b, "TenantId") == _tenantId);
         }
 
@@ -123,7 +126,8 @@ namespace EntityFilters.MultiTenant
         {
             ChangeTracker.DetectChanges();
 
-            foreach (var item in ChangeTracker.Entries().Where(e => e.State == EntityState.Added && e.Metadata.GetProperties().Any(p => p.Name == "TenantId")))
+            foreach (var item in ChangeTracker.Entries().Where(e =>
+                e.State == EntityState.Added && e.Metadata.GetProperties().Any(p => p.Name == "TenantId")))
             {
                 item.CurrentValues["TenantId"] = _tenantId;
             }
@@ -138,7 +142,7 @@ namespace EntityFilters.MultiTenant
         }
     }
 
-    public class Blog 
+    public class Blog
     {
         private string _tenantId;
 
@@ -149,7 +153,7 @@ namespace EntityFilters.MultiTenant
         public List<Post> Posts { get; set; }
     }
 
-    public class Post 
+    public class Post
     {
         public int PostId { get; set; }
         public string Title { get; set; }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Demos
 {
@@ -12,12 +14,17 @@ namespace Demos
 
             using (var db = new BloggingContext())
             {
-                var service = new BlogService(db);
-                var blogs = service.SearchBlogs("cat");
+                Console.Write("Enter a search term: ");
+
+                var term = Console.ReadLine();
+
+                var blogs = db.Blogs.FromSql($"SELECT * FROM dbo.SearchBlogs({term})")
+                    .OrderBy(b => b.Url)
+                    .Select(b => b.Url);
 
                 foreach (var blog in blogs)
                 {
-                    Console.WriteLine(blog.Url);
+                    Console.WriteLine(blog);
                 }
             }
         }
@@ -42,25 +49,14 @@ namespace Demos
 
     public class BloggingContext : DbContext
     {
-        public BloggingContext()
-        {
-        }
-
-        public BloggingContext(DbContextOptions options)
-            : base(options)
-        {
-        }
-
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Post> Posts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer(
-                    @"Server=(localdb)\mssqllocaldb;Database=Demo.Like;Trusted_Connection=True;");
-            }
+            optionsBuilder
+                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.DbFunctions;Trusted_Connection=True;")
+                .UseLoggerFactory(new LoggerFactory().AddConsole());
         }
     }
 

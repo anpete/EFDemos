@@ -1,20 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Linq;
 using System.Net.Http;
+using Microsoft.EntityFrameworkCore;
 
-namespace FieldMapping
+namespace Demos
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main()
         {
             SetupDatabase();
 
             using (var db = new BloggingContext())
             {
-                var blog = new Blog();
-                blog.Name = "Rowan's Blog";
+                var blog = new Blog { Name = "Rowan's Blog" };
+                
                 blog.SetUrl("http://romiller.com");
 
                 db.Blogs.Add(blog);
@@ -48,7 +48,7 @@ namespace FieldMapping
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
-                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.FieldMapping;Trusted_Connection=True;");
+                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.FlexibleMapping;Trusted_Connection=True;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

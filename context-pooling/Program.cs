@@ -1,28 +1,30 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ContextPooling
+namespace Demos
 {
-    class Program
+    internal class Program
     {
-        public static long CONTEXT_INSTANCES;
-        public static long REQUESTS_PROCESSED;
+        public static long ContextInstances;
+        public static long RequestsProcessed;
 
         private static readonly TimeSpan _duration = TimeSpan.FromSeconds(10);
         private static readonly Stopwatch _stopwatch = new Stopwatch();
+        
         private static readonly int _threads = 32;
 
-        static void Main(string[] args)
+        private static void Main()
         {
             var serviceProvider = new ServiceCollection()
                 .AddEntityFrameworkSqlServer()
                 .AddDbContextPool<BloggingContext>(
-                    c => c.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.ContextPooling;Trusted_Connection=True;ConnectRetryCount=0;"),
-                    poolSize: 16)
+                    c => c.UseSqlServer(
+                        @"Server=(localdb)\mssqllocaldb;Database=Demo.ContextPooling;Trusted_Connection=True;ConnectRetryCount=0;"),
+                    16)
                 .BuildServiceProvider();
 
             SetupDatabase(serviceProvider);
@@ -48,7 +50,7 @@ namespace ContextPooling
                     await context.Blogs.FirstAsync();
                 }
 
-                Interlocked.Increment(ref REQUESTS_PROCESSED);
+                Interlocked.Increment(ref RequestsProcessed);
             }
         }
 
@@ -69,8 +71,8 @@ namespace ContextPooling
 
         private static async void MonitorResults()
         {
-            var lastInstanceCount = (long)0;
-            var lastRequestCount = (long)0;
+            var lastInstanceCount = (long) 0;
+            var lastRequestCount = (long) 0;
             var lastElapsed = TimeSpan.Zero;
 
             _stopwatch.Start();
@@ -79,16 +81,16 @@ namespace ContextPooling
             {
                 await Task.Delay(TimeSpan.FromSeconds(1));
 
-                var thisInstanceCount = CONTEXT_INSTANCES;
-                var thisRequestCount = REQUESTS_PROCESSED;
+                var thisInstanceCount = ContextInstances;
+                var thisRequestCount = RequestsProcessed;
                 var thisElapsed = _stopwatch.Elapsed;
 
                 var currentElapsed = thisElapsed - lastElapsed;
                 var currentRequests = thisRequestCount - lastRequestCount;
 
                 Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] "
-                    + $"Context creations: {thisInstanceCount - lastInstanceCount} | "
-                    + $"Requests per second: {Math.Round(currentRequests / currentElapsed.TotalSeconds)}");
+                                  + $"Context creations: {thisInstanceCount - lastInstanceCount} | "
+                                  + $"Requests per second: {Math.Round(currentRequests / currentElapsed.TotalSeconds)}");
 
                 lastInstanceCount = thisInstanceCount;
                 lastRequestCount = thisRequestCount;
@@ -96,8 +98,9 @@ namespace ContextPooling
             }
 
             Console.WriteLine("");
-            Console.WriteLine($"Total context creations: {CONTEXT_INSTANCES}");
-            Console.WriteLine($"Requests per second:     {Math.Round(REQUESTS_PROCESSED / _stopwatch.Elapsed.TotalSeconds)}");
+            Console.WriteLine($"Total context creations: {ContextInstances}");
+            Console.WriteLine(
+                $"Requests per second:     {Math.Round(RequestsProcessed / _stopwatch.Elapsed.TotalSeconds)}");
 
             _stopwatch.Stop();
         }
@@ -108,7 +111,7 @@ namespace ContextPooling
         public BloggingContext(DbContextOptions<BloggingContext> options)
             : base(options)
         {
-            Interlocked.Increment(ref Program.CONTEXT_INSTANCES);
+            Interlocked.Increment(ref Program.ContextInstances);
         }
 
         public DbSet<Blog> Blogs { get; set; }
