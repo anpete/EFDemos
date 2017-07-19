@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.26711.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "compiled-queries", "compiled-queries\compiled-queries.csproj", "{31BC4EDB-9C07-43E4-B9A5-E2F85AE8E3A3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ef-101", "ef-101\ef-101.csproj", "{342A424B-7EA8-44CE-88E8-88F6F7AE5E64}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "string-interpolation", "string-interpolation\string-interpolation.csproj", "{022B4E54-270C-41F0-864E-49D46F3B6C04}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "owned-types", "owned-types\owned-types.csproj", "{575719D0-5006-4BB1-83F1-012B300B7616}"
@@ -31,10 +29,6 @@ Global
 		{31BC4EDB-9C07-43E4-B9A5-E2F85AE8E3A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31BC4EDB-9C07-43E4-B9A5-E2F85AE8E3A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31BC4EDB-9C07-43E4-B9A5-E2F85AE8E3A3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{342A424B-7EA8-44CE-88E8-88F6F7AE5E64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{342A424B-7EA8-44CE-88E8-88F6F7AE5E64}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{342A424B-7EA8-44CE-88E8-88F6F7AE5E64}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{342A424B-7EA8-44CE-88E8-88F6F7AE5E64}.Release|Any CPU.Build.0 = Release|Any CPU
 		{022B4E54-270C-41F0-864E-49D46F3B6C04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{022B4E54-270C-41F0-864E-49D46F3B6C04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{022B4E54-270C-41F0-864E-49D46F3B6C04}.Release|Any CPU.ActiveCfg = Release|Any CPU

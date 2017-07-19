@@ -14,8 +14,8 @@ namespace Demos
 
         private static readonly TimeSpan _duration = TimeSpan.FromSeconds(10);
         private static readonly Stopwatch _stopwatch = new Stopwatch();
-        
-        private static readonly int _threads = 32;
+
+        private const int Threads = 32;
 
         private static void Main()
         {
@@ -31,7 +31,7 @@ namespace Demos
 
             MonitorResults();
 
-            var tasks = new Task[_threads];
+            var tasks = new Task[Threads];
             for (var i = 0; i < tasks.Length; i++)
             {
                 tasks[i] = SimulateContinualRequests(serviceProvider);

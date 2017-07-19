@@ -29,8 +29,8 @@ namespace Demos
                 },
                 accountNumbers =>
                 {
-                    var query = EF.CompileQuery((AdventureWorksContext db, string id) =>
-                        db.Customers.Single(c => c.AccountNumber == id));
+                    var query = EF.CompileQuery((AdventureWorksContext db, string id) 
+                        => db.Customers.Single(c => c.AccountNumber == id));
 
                     using (var db = new AdventureWorksContext())
                     {

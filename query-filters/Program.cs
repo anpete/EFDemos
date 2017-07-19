@@ -66,9 +66,9 @@ namespace Demos
 
                     db.SaveChanges();
 
-                    using (var jeff_db = new BloggingContext("jeff"))
+                    using (var jeffDb = new BloggingContext("jeff"))
                     {
-                        jeff_db.Blogs.Add(new Blog
+                        jeffDb.Blogs.Add(new Blog
                         {
                             Url = "http://sample.com/blogs/catfish",
                             Posts = new List<Post>
@@ -78,7 +78,7 @@ namespace Demos
                             }
                         });
 
-                        jeff_db.SaveChanges();
+                        jeffDb.SaveChanges();
                     }
 
                     db.Posts
