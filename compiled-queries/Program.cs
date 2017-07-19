@@ -27,9 +27,12 @@ namespace Demos
                         }
                     }
                 },
+                "Regular");
+
+            RunTest(
                 accountNumbers =>
                 {
-                    var query = EF.CompileQuery((AdventureWorksContext db, string id) 
+                    var query = EF.CompileQuery((AdventureWorksContext db, string id)
                         => db.Customers.Single(c => c.AccountNumber == id));
 
                     using (var db = new AdventureWorksContext())
@@ -39,25 +42,22 @@ namespace Demos
                             var customer = query(db, id);
                         }
                     }
-                });
+                },
+                "Compiled");
         }
 
-        private static void RunTest(Action<string[]> regularTest, Action<string[]> compiledTest)
+        private static void RunTest(Action<string[]> test, string name)
         {
             var accountNumbers = GetAccountNumbers(500);
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            regularTest(accountNumbers);
-            stopwatch.Stop();
-            var regularResult = stopwatch.ElapsedMilliseconds;
-            Console.WriteLine($"Regular:  {regularResult.ToString().PadLeft(4)}ms");
 
-            stopwatch.Restart();
-            compiledTest(accountNumbers);
+            test(accountNumbers);
+
             stopwatch.Stop();
-            var compiledResult = stopwatch.ElapsedMilliseconds;
-            Console.WriteLine($"Compiled: {compiledResult.ToString().PadLeft(4)}ms");
+
+            Console.WriteLine($"{name}:  {stopwatch.ElapsedMilliseconds.ToString().PadLeft(4)}ms");
         }
 
         private static string[] GetAccountNumbers(int count)
