@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Demos
 {
@@ -48,7 +49,8 @@ namespace Demos
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
-                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.FlexibleMapping;Trusted_Connection=True;");
+                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.FlexibleMapping;Trusted_Connection=True;")
+                .UseLoggerFactory(new LoggerFactory().AddConsole());
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
