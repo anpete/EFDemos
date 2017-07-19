@@ -110,16 +110,15 @@ namespace Demos
             optionsBuilder
                 .UseSqlServer(
                     @"Server=(localdb)\mssqllocaldb;Database=Demo.QueryFilters;Trusted_Connection=True;ConnectRetryCount=0;")
-                .UseLoggerFactory(new LoggerFactory().AddConsole());
+                .UseLoggerFactory(new LoggerFactory().AddConsole((s, l) => l == LogLevel.Information && !s.EndsWith("Connection")));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Post>().HasQueryFilter(p => !p.IsDeleted);
-
-            modelBuilder.Entity<Blog>().Property<string>("TenantId").HasField("_tenantId").Metadata.AfterSaveBehavior =
-                PropertySaveBehavior.Ignore;
-            modelBuilder.Entity<Blog>().HasQueryFilter(b => EF.Property<string>(b, "TenantId") == _tenantId);
+            modelBuilder.Entity<Blog>().Property<string>("TenantId").HasField("_tenantId");
+            
+            // Configure entity filters
+            
         }
 
         public override int SaveChanges()

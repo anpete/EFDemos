@@ -10,22 +10,28 @@ namespace Demos
     {
         private static void Main()
         {
+            Console.Write("Enter a search term: ");
+
+            var term = Console.ReadLine();
+
             SetupDatabase();
 
             using (var db = new BloggingContext())
             {
-                Console.Write("Enter a search term: ");
+                // 1) FromSql with traditional format string.
 
-                var term = Console.ReadLine();
+                // 2) FromSql with naive interpolation
 
-                var blogs = db.Blogs.FromSql($"SELECT * FROM dbo.SearchBlogs({term})")
-                    .OrderBy(b => b.Url)
-                    .Select(b => b.Url);
+                // 3) FromSql with interpolation support
 
-                foreach (var blog in blogs)
-                {
-                    Console.WriteLine(blog);
-                }
+                Console.WriteLine();
+
+//                foreach (var blog in blogs)
+//                {
+//                    Console.WriteLine(blog);
+//                }
+
+                Console.WriteLine();
             }
         }
 
@@ -55,8 +61,8 @@ namespace Demos
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
-                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.StringInterpolation;Trusted_Connection=True;")
-                .UseLoggerFactory(new LoggerFactory().AddConsole());
+                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.StringInterpolation;Trusted_Connection=True;ConnectRetryCount=0")
+                .UseLoggerFactory(new LoggerFactory().AddConsole((s, l) => l == LogLevel.Information && !s.EndsWith("Connection")));
         }
     }
 

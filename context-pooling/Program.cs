@@ -21,10 +21,8 @@ namespace Demos
         {
             var serviceProvider = new ServiceCollection()
                 .AddEntityFrameworkSqlServer()
-                .AddDbContextPool<BloggingContext>(
-                    c => c.UseSqlServer(
-                        @"Server=(localdb)\mssqllocaldb;Database=Demo.ContextPooling;Trusted_Connection=True;ConnectRetryCount=0;"),
-                    16)
+                .AddDbContext<BloggingContext>(c => c.UseSqlServer(
+                        @"Server=(localdb)\mssqllocaldb;Database=Demo.ContextPooling;Trusted_Connection=True;ConnectRetryCount=0;"))
                 .BuildServiceProvider();
 
             SetupDatabase(serviceProvider);
@@ -32,6 +30,7 @@ namespace Demos
             MonitorResults();
 
             var tasks = new Task[Threads];
+            
             for (var i = 0; i < tasks.Length; i++)
             {
                 tasks[i] = SimulateContinualRequests(serviceProvider);
@@ -47,6 +46,7 @@ namespace Demos
                 using (var serviceScope = serviceProvider.CreateScope())
                 {
                     var context = serviceScope.ServiceProvider.GetService<BloggingContext>();
+                    
                     await context.Blogs.FirstAsync();
                 }
 
@@ -89,7 +89,7 @@ namespace Demos
                 var currentRequests = thisRequestCount - lastRequestCount;
 
                 Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] "
-                                  + $"Context creations: {thisInstanceCount - lastInstanceCount} | "
+                                  + $"Context creations per second: {thisInstanceCount - lastInstanceCount} | "
                                   + $"Requests per second: {Math.Round(currentRequests / currentElapsed.TotalSeconds)}");
 
                 lastInstanceCount = thisInstanceCount;

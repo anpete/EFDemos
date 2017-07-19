@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Net.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -15,20 +14,18 @@ namespace Demos
             using (var db = new BloggingContext())
             {
                 var blog = new Blog { Name = "Rowan's Blog" };
-                
+
                 blog.SetUrl("http://romiller.com");
 
                 db.Blogs.Add(blog);
                 db.SaveChanges();
+            }
 
-                var blogs = db.Blogs
-                    .OrderBy(b => EF.Property<string>(b, "Url"))
-                    .ToList();
+            using (var db = new BloggingContext())
+            {
+                var blog = db.Blogs.Single();
 
-                foreach (var b in blogs)
-                {
-                    Console.WriteLine(b.Name);
-                }
+                Console.WriteLine($"{blog.Name}: {blog.Url}");
             }
         }
 
@@ -49,39 +46,30 @@ namespace Demos
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
-                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.FlexibleMapping;Trusted_Connection=True;")
-                .UseLoggerFactory(new LoggerFactory().AddConsole());
+                .UseSqlServer(
+                    @"Server=(localdb)\mssqllocaldb;Database=Demo.FlexibleMapping;Trusted_Connection=True;ConnectRetryCount=0;")
+                .UseLoggerFactory(new LoggerFactory().AddConsole((s, l) =>
+                    l == LogLevel.Information && !s.EndsWith("Connection")));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Blog>()
-                .Property<string>("Url")
-                .HasField("_url");
+            // Set up a field mapping
         }
     }
 
     public class Blog
     {
-        private string _url;
-
         public int BlogId { get; set; }
         public string Name { get; set; }
 
-        public string GetUrl()
-        {
-            return _url;
-        }
+        public string Url { get; private set; }
 
         public void SetUrl(string url)
         {
-            using (var client = new HttpClient())
-            {
-                var response = client.GetAsync(url).Result;
-                response.EnsureSuccessStatusCode();
-            }
+            // Perform some domain logic...
 
-            _url = url;
+            Url = url;
         }
     }
 }
