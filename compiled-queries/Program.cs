@@ -8,7 +8,7 @@ using Performance.EFCore;
 
 namespace Demos
 {
-    internal class Program
+    public class Program
     {
         private static void Main()
         {
@@ -25,7 +25,7 @@ namespace Demos
                         {
                             foreach (var id in accountNumbers)
                             {
-                                // Use auto-compiled query
+                                // Use a regular auto-compiled query
                                 var customer = db.Customers.Single(c => c.AccountNumber == id);
                             }
                         }

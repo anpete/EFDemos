@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Demos
 {
-    internal class Program
+    public class Program
     {
         private static void Main()
         {

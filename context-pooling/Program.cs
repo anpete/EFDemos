@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -19,9 +20,13 @@ namespace Demos
 
     public class BloggingContext : DbContext
     {
-        public BloggingContext(DbContextOptions<BloggingContext> options)
-            : base(options) =>
-            Program.ContextCreated();
+        public static long InstanceCount;
+
+        public BloggingContext(DbContextOptions options)
+            : base(options)
+        {
+            Interlocked.Increment(ref InstanceCount);
+        }
 
         public DbSet<Blog> Blogs { get; set; }
     }
@@ -30,8 +35,7 @@ namespace Demos
     {
         private readonly BloggingContext _context;
 
-        public BlogController(BloggingContext context) =>
-            _context = context;
+        public BlogController(BloggingContext context) => _context = context;
 
         public async Task ActionAsync()
         {
@@ -41,15 +45,17 @@ namespace Demos
 
     public class Startup
     {
-        private readonly string _connectionString =
-            @"Server=(localdb)\mssqllocaldb;Database=Demo.ContextPooling;Integrated Security=True;ConnectRetryCount=0";
+        private const string ConnectionString
+            = @"Server=(localdb)\mssqllocaldb;Database=Demo.ContextPooling;Integrated Security=True;ConnectRetryCount=0";
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<BloggingContext>(c => c.UseSqlServer(_connectionString));
+            services.AddDbContext<BloggingContext>(c => c.UseSqlServer(ConnectionString));
 
             #region Enable pooling
-            //services.AddDbContextPool<BloggingContext>(c => c.UseSqlServer(_connectionString));
+
+            //services.AddDbContextPool<BloggingContext>(c => c.UseSqlServer(ConnectionString));
+
             #endregion
         }
     }
@@ -59,10 +65,9 @@ namespace Demos
         private const int Threads = 32;
         private const int Seconds = 10;
 
-        private static long _contextInstances;
         private static long _requestsProcessed;
 
-        private static void Main()
+        private static async Task Main()
         {
             var serviceCollection = new ServiceCollection();
             new Startup().ConfigureServices(serviceCollection);
@@ -74,19 +79,10 @@ namespace Demos
 
             MonitorResults(TimeSpan.FromSeconds(Seconds), stopwatch);
 
-            var tasks = new Task[Threads];
-
-            for (var i = 0; i < tasks.Length; i++)
-            {
-                tasks[i] = SimulateRequestsAsync(serviceProvider, stopwatch);
-            }
-
-            Task.WhenAll(tasks).Wait();
-        }
-
-        public static void ContextCreated()
-        {
-            Interlocked.Increment(ref _contextInstances);
+            await Task.WhenAll(
+                Enumerable
+                    .Range(0, Threads)
+                    .Select(_ => SimulateRequestsAsync(serviceProvider, stopwatch)));
         }
 
         private static void SetupDatabase(IServiceProvider serviceProvider)
@@ -112,6 +108,7 @@ namespace Demos
                 {
                     await new BlogController(serviceScope.ServiceProvider.GetService<BloggingContext>()).ActionAsync();
                 }
+
                 Interlocked.Increment(ref _requestsProcessed);
             }
         }
@@ -128,25 +125,24 @@ namespace Demos
             {
                 await Task.Delay(TimeSpan.FromSeconds(1));
 
-                var thisInstanceCount = _contextInstances;
-                var thisRequestCount = _requestsProcessed;
-                var thisElapsed = stopwatch.Elapsed;
-
-                var currentElapsed = thisElapsed - lastElapsed;
-                var currentRequests = thisRequestCount - lastRequestCount;
+                var instanceCount = BloggingContext.InstanceCount;
+                var requestCount = _requestsProcessed;
+                var elapsed = stopwatch.Elapsed;
+                var currentElapsed = elapsed - lastElapsed;
+                var currentRequests = requestCount - lastRequestCount;
 
                 Console.WriteLine(
                     $"[{DateTime.Now:HH:mm:ss.fff}] "
-                    + $"Context creations: {thisInstanceCount - lastInstanceCount} | "
-                    + $"Requests per second: {Math.Round(currentRequests / currentElapsed.TotalSeconds)}");
+                    + $"Context creations/second: {instanceCount - lastInstanceCount} | "
+                    + $"Requests/second: {Math.Round(currentRequests / currentElapsed.TotalSeconds)}");
 
-                lastInstanceCount = thisInstanceCount;
-                lastRequestCount = thisRequestCount;
-                lastElapsed = thisElapsed;
+                lastInstanceCount = instanceCount;
+                lastRequestCount = requestCount;
+                lastElapsed = elapsed;
             }
 
-            Console.WriteLine("");
-            Console.WriteLine($"Total context creations: {_contextInstances}");
+            Console.WriteLine();
+            Console.WriteLine($"Total context creations: {BloggingContext.InstanceCount}");
             Console.WriteLine(
                 $"Requests per second:     {Math.Round(_requestsProcessed / stopwatch.Elapsed.TotalSeconds)}");
 
