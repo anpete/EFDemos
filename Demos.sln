@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26711.1
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "compiled-queries", "compiled-queries\compiled-queries.csproj", "{31BC4EDB-9C07-43E4-B9A5-E2F85AE8E3A3}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "flexible-mapping", "flexible-mapping\flexible-mapping.csproj", "{057645E3-8E72-447A-B23F-C9A424CA250F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "db-functions", "db-functions\db-functions.csproj", "{7ED2CEF6-20A7-4D02-BCFB-42C017F841F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "data-seeding", "data-seeding\data-seeding.csproj", "{E4D436A7-4510-42EE-A7AA-978FDB73A28A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{7ED2CEF6-20A7-4D02-BCFB-42C017F841F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7ED2CEF6-20A7-4D02-BCFB-42C017F841F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7ED2CEF6-20A7-4D02-BCFB-42C017F841F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4D436A7-4510-42EE-A7AA-978FDB73A28A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4D436A7-4510-42EE-A7AA-978FDB73A28A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4D436A7-4510-42EE-A7AA-978FDB73A28A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4D436A7-4510-42EE-A7AA-978FDB73A28A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
