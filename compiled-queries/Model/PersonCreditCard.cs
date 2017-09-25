@@ -1,9 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using System;
 
 namespace Performance.EFCore
 {
-    public partial class PersonCreditCard
+    public class PersonCreditCard
     {
         public int BusinessEntityID { get; set; }
         public int CreditCardID { get; set; }

@@ -1,7 +1,9 @@
-﻿using System;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using System;
 using System.Diagnostics;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using Performance.EFCore;
 
 namespace Demos
@@ -18,32 +20,31 @@ namespace Demos
 
             RunTest(
                 accountNumbers =>
-                {
-                    using (var db = new AdventureWorksContext())
                     {
-                        foreach (var id in accountNumbers)
+                        using (var db = new AdventureWorksContext())
                         {
-                            // Use auto-compiled query
-                            var customer = db.Customers.Single(c => c.AccountNumber == id);
+                            foreach (var id in accountNumbers)
+                            {
+                                // Use auto-compiled query
+                                var customer = db.Customers.Single(c => c.AccountNumber == id);
+                            }
                         }
-                    }
-                },
+                    },
                 name: "Regular");
 
             RunTest(
                 accountNumbers =>
-                {
-                    // Create explicit compiled query
-                    
-                    using (var db = new AdventureWorksContext())
                     {
-                        foreach (var id in accountNumbers)
+                        // Create explicit compiled query
+
+                        using (var db = new AdventureWorksContext())
                         {
-                            // Invoke the compiled query
-                            
+                            foreach (var id in accountNumbers)
+                            {
+                                // Invoke the compiled query
+                            }
                         }
-                    }
-                },
+                    },
                 name: "Compiled");
         }
 
@@ -51,7 +52,7 @@ namespace Demos
         {
             var accountNumbers = GetAccountNumbers(500);
             var stopwatch = new Stopwatch();
-            
+
             stopwatch.Start();
 
             test(accountNumbers);

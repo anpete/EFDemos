@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +19,8 @@ namespace Demos
 
     public class BloggingContext : DbContext
     {
-        public BloggingContext(DbContextOptions<BloggingContext> options) : base(options) =>
+        public BloggingContext(DbContextOptions<BloggingContext> options)
+            : base(options) =>
             Program.ContextCreated();
 
         public DbSet<Blog> Blogs { get; set; }
@@ -24,7 +28,7 @@ namespace Demos
 
     public class BlogController
     {
-        private BloggingContext _context;
+        private readonly BloggingContext _context;
 
         public BlogController(BloggingContext context) =>
             _context = context;
@@ -37,12 +41,16 @@ namespace Demos
 
     public class Startup
     {
-        private string _connectionString =
+        private readonly string _connectionString =
             @"Server=(localdb)\mssqllocaldb;Database=Demo.ContextPooling;Integrated Security=True;ConnectRetryCount=0";
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContextPool<BloggingContext>(c => c.UseSqlServer(_connectionString));
+            services.AddDbContext<BloggingContext>(c => c.UseSqlServer(_connectionString));
+
+            #region Enable pooling
+            //services.AddDbContextPool<BloggingContext>(c => c.UseSqlServer(_connectionString));
+            #endregion
         }
     }
 
@@ -78,7 +86,7 @@ namespace Demos
 
         public static void ContextCreated()
         {
-            Interlocked.Increment(ref Program._contextInstances);
+            Interlocked.Increment(ref _contextInstances);
         }
 
         private static void SetupDatabase(IServiceProvider serviceProvider)
@@ -127,9 +135,10 @@ namespace Demos
                 var currentElapsed = thisElapsed - lastElapsed;
                 var currentRequests = thisRequestCount - lastRequestCount;
 
-                Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] "
-                                  + $"Context creations: {thisInstanceCount - lastInstanceCount} | "
-                                  + $"Requests per second: {Math.Round(currentRequests / currentElapsed.TotalSeconds)}");
+                Console.WriteLine(
+                    $"[{DateTime.Now:HH:mm:ss.fff}] "
+                    + $"Context creations: {thisInstanceCount - lastInstanceCount} | "
+                    + $"Requests per second: {Math.Round(currentRequests / currentElapsed.TotalSeconds)}");
 
                 lastInstanceCount = thisInstanceCount;
                 lastRequestCount = thisRequestCount;

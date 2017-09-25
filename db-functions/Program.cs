@@ -1,9 +1,10 @@
-﻿using System;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 
 namespace Demos
@@ -65,7 +66,7 @@ namespace Demos
                 .UseLoggerFactory(new LoggerFactory().AddConsole((s, l) => l == LogLevel.Information && !s.EndsWith("Connection")));
         }
 
-        [DbFunction(Schema="dbo")]
+        [DbFunction(Schema = "dbo")]
         public static int ComputePostCount(int blogId)
         {
             return 0;
@@ -88,28 +89,5 @@ namespace Demos
 
         public int BlogId { get; set; }
         public Blog Blog { get; set; }
-    }
-
-    internal static class Extensions
-    {
-        /// <summary>
-        ///     Configures a database function when targeting a relational database.
-        /// </summary>
-        /// <param name="modelBuilder"> The model builder. </param>
-        /// <param name="expression"> The method this dbFunction uses. </param>
-        /// <returns> The same builder instance so that multiple calls can be chained. </returns>
-        public static DbFunctionBuilder HasDbFunction<TResult>(
-            this ModelBuilder modelBuilder,
-            Expression<Func<TResult>> expression)
-        {
-            var methodInfo = (expression.Body as MethodCallExpression)?.Method;
-
-            if (methodInfo == null)
-            {
-                throw new ArgumentException();
-            }
-
-            return modelBuilder.HasDbFunction(methodInfo);
-        }
     }
 }

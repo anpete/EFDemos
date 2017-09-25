@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -14,28 +17,29 @@ namespace Demos
 
             using (var db = new CustomerContext())
             {
-                db.Customers.Add(new Customer
-                {
-                    Name = "Rowan",
-                    WorkAddress = new Address
+                db.Customers.Add(
+                    new Customer
                     {
-                        LineOne = "Microsoft Campus",
-                        LineTwo = "One Microsoft Way",
-                        CityOrTown = "Redmond",
-                        PostalOrZipCode = "98052",
-                        StateOrProvince = "WA",
-                        CountryName = "United States of America"
-                    },
-                    PhysicalAddress = new Address
-                    {
-                        LineOne = "Washington State Convention Center",
-                        LineTwo = "705 Pike St",
-                        CityOrTown = "Seattle",
-                        PostalOrZipCode = "98101",
-                        StateOrProvince = "WA",
-                        CountryName = "United States of America"
-                    }
-                });
+                        Name = "Rowan",
+                        WorkAddress = new Address
+                        {
+                            LineOne = "Microsoft Campus",
+                            LineTwo = "One Microsoft Way",
+                            CityOrTown = "Redmond",
+                            PostalOrZipCode = "98052",
+                            StateOrProvince = "WA",
+                            CountryName = "United States of America"
+                        },
+                        PhysicalAddress = new Address
+                        {
+                            LineOne = "Washington State Convention Center",
+                            LineTwo = "705 Pike St",
+                            CityOrTown = "Seattle",
+                            PostalOrZipCode = "98101",
+                            StateOrProvince = "WA",
+                            CountryName = "United States of America"
+                        }
+                    });
 
                 db.SaveChanges();
             }
@@ -49,7 +53,7 @@ namespace Demos
             {
                 Console.WriteLine("Recreating database from current model");
                 Console.Write(" Dropping database...");
-                
+
                 db.Database.EnsureDeleted();
 
                 Console.WriteLine(" done");
@@ -77,7 +81,6 @@ namespace Demos
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Fluent configuration of owned types.
-            
         }
     }
 

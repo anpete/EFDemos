@@ -1,8 +1,10 @@
-﻿using System;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 
 #pragma warning disable 169
@@ -42,48 +44,52 @@ namespace Demos
             {
                 if (db.Database.EnsureCreated())
                 {
-                    db.Blogs.Add(new Blog
-                    {
-                        Url = "http://sample.com/blogs/fish",
-                        Posts = new List<Post>
+                    db.Blogs.Add(
+                        new Blog
                         {
-                            new Post { Title = "Fish care 101" },
-                            new Post { Title = "Caring for tropical fish" },
-                            new Post { Title = "Types of ornamental fish" }
-                        }
-                    });
+                            Url = "http://sample.com/blogs/fish",
+                            Posts = new List<Post>
+                            {
+                                new Post { Title = "Fish care 101" },
+                                new Post { Title = "Caring for tropical fish" },
+                                new Post { Title = "Types of ornamental fish" }
+                            }
+                        });
 
-                    db.Blogs.Add(new Blog
-                    {
-                        Url = "http://sample.com/blogs/cats",
-                        Posts = new List<Post>
+                    db.Blogs.Add(
+                        new Blog
                         {
-                            new Post { Title = "Cat care 101" },
-                            new Post { Title = "Caring for tropical cats" },
-                            new Post { Title = "Types of ornamental cats" }
-                        }
-                    });
+                            Url = "http://sample.com/blogs/cats",
+                            Posts = new List<Post>
+                            {
+                                new Post { Title = "Cat care 101" },
+                                new Post { Title = "Caring for tropical cats" },
+                                new Post { Title = "Types of ornamental cats" }
+                            }
+                        });
 
                     db.SaveChanges();
 
                     using (var jeffDb = new BloggingContext("jeff"))
                     {
-                        jeffDb.Blogs.Add(new Blog
-                        {
-                            Url = "http://sample.com/blogs/catfish",
-                            Posts = new List<Post>
+                        jeffDb.Blogs.Add(
+                            new Blog
                             {
-                                new Post { Title = "Catfish care 101" },
-                                new Post { Title = "History of the catfish name" }
-                            }
-                        });
+                                Url = "http://sample.com/blogs/catfish",
+                                Posts = new List<Post>
+                                {
+                                    new Post { Title = "Catfish care 101" },
+                                    new Post { Title = "History of the catfish name" }
+                                }
+                            });
 
                         jeffDb.SaveChanges();
                     }
 
                     db.Posts
-                        .Where(p => p.Title == "Caring for tropical fish"
-                                    || p.Title == "Cat care 101")
+                        .Where(
+                            p => p.Title == "Caring for tropical fish"
+                                 || p.Title == "Cat care 101")
                         .ToList()
                         .ForEach(p => db.Posts.Remove(p));
 
@@ -116,17 +122,17 @@ namespace Demos
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Blog>().Property<string>("TenantId").HasField("_tenantId");
-            
+
             // Configure entity filters
-            
         }
 
         public override int SaveChanges()
         {
             ChangeTracker.DetectChanges();
 
-            foreach (var item in ChangeTracker.Entries().Where(e =>
-                e.State == EntityState.Added && e.Metadata.GetProperties().Any(p => p.Name == "TenantId")))
+            foreach (var item in ChangeTracker.Entries().Where(
+                e =>
+                    e.State == EntityState.Added && e.Metadata.GetProperties().Any(p => p.Name == "TenantId")))
             {
                 item.CurrentValues["TenantId"] = _tenantId;
             }
