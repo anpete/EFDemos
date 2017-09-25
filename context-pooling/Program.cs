@@ -7,83 +7,122 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Demos
 {
-    internal class Program
+    public class Blog
     {
-        public static long ContextInstances;
-        public static long RequestsProcessed;
+        public int BlogId { get; set; }
+        public string Name { get; set; }
+        public string Url { get; set; }
+    }
 
-        private static readonly TimeSpan _duration = TimeSpan.FromSeconds(10);
-        private static readonly Stopwatch _stopwatch = new Stopwatch();
+    public class BloggingContext : DbContext
+    {
+        public BloggingContext(DbContextOptions<BloggingContext> options) : base(options) =>
+            Program.ContextCreated();
 
+        public DbSet<Blog> Blogs { get; set; }
+    }
+
+    public class BlogController
+    {
+        private BloggingContext _context;
+
+        public BlogController(BloggingContext context) =>
+            _context = context;
+
+        public async Task ActionAsync()
+        {
+            await _context.Blogs.FirstAsync();
+        }
+    }
+
+    public class Startup
+    {
+        private string _connectionString =
+            @"Server=(localdb)\mssqllocaldb;Database=Demo.ContextPooling;Integrated Security=True;ConnectRetryCount=0";
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddDbContextPool<BloggingContext>(c => c.UseSqlServer(_connectionString));
+        }
+    }
+
+    public class Program
+    {
         private const int Threads = 32;
+        private const int Seconds = 10;
+
+        private static long _contextInstances;
+        private static long _requestsProcessed;
 
         private static void Main()
         {
-            var serviceProvider = new ServiceCollection()
-                .AddEntityFrameworkSqlServer()
-                .AddDbContextPool<BloggingContext>(
-                    c => c.UseSqlServer(
-                        @"Server=(localdb)\mssqllocaldb;Database=Demo.ContextPooling;Trusted_Connection=True;ConnectRetryCount=0;"),
-                    16)
-                .BuildServiceProvider();
+            var serviceCollection = new ServiceCollection();
+            new Startup().ConfigureServices(serviceCollection);
+            var serviceProvider = serviceCollection.BuildServiceProvider();
 
             SetupDatabase(serviceProvider);
 
-            MonitorResults();
+            var stopwatch = new Stopwatch();
+
+            MonitorResults(TimeSpan.FromSeconds(Seconds), stopwatch);
 
             var tasks = new Task[Threads];
+
             for (var i = 0; i < tasks.Length; i++)
             {
-                tasks[i] = SimulateContinualRequests(serviceProvider);
+                tasks[i] = SimulateRequestsAsync(serviceProvider, stopwatch);
             }
 
             Task.WhenAll(tasks).Wait();
         }
 
-        private static async Task SimulateContinualRequests(IServiceProvider serviceProvider)
+        public static void ContextCreated()
         {
-            while (_stopwatch.IsRunning)
-            {
-                using (var serviceScope = serviceProvider.CreateScope())
-                {
-                    var context = serviceScope.ServiceProvider.GetService<BloggingContext>();
-                    await context.Blogs.FirstAsync();
-                }
-
-                Interlocked.Increment(ref RequestsProcessed);
-            }
+            Interlocked.Increment(ref Program._contextInstances);
         }
 
         private static void SetupDatabase(IServiceProvider serviceProvider)
         {
             using (var serviceScope = serviceProvider.CreateScope())
             {
-                var db = serviceScope.ServiceProvider.GetService<BloggingContext>();
+                var context = serviceScope.ServiceProvider.GetService<BloggingContext>();
 
-                if (db.Database.EnsureCreated())
+                if (context.Database.EnsureCreated())
                 {
-                    db.Blogs.Add(new Blog { Name = "The Dog Blog", Url = "http://sample.com/dogs" });
-                    db.Blogs.Add(new Blog { Name = "The Cat Blog", Url = "http://sample.com/cats" });
-                    db.SaveChanges();
+                    context.Blogs.Add(new Blog { Name = "The Dog Blog", Url = "http://sample.com/dogs" });
+                    context.Blogs.Add(new Blog { Name = "The Cat Blog", Url = "http://sample.com/cats" });
+                    context.SaveChanges();
                 }
             }
         }
 
-        private static async void MonitorResults()
+        private static async Task SimulateRequestsAsync(IServiceProvider serviceProvider, Stopwatch stopwatch)
         {
-            var lastInstanceCount = (long) 0;
-            var lastRequestCount = (long) 0;
+            while (stopwatch.IsRunning)
+            {
+                using (var serviceScope = serviceProvider.CreateScope())
+                {
+                    await new BlogController(serviceScope.ServiceProvider.GetService<BloggingContext>()).ActionAsync();
+                }
+                Interlocked.Increment(ref _requestsProcessed);
+            }
+        }
+
+        private static async void MonitorResults(TimeSpan duration, Stopwatch stopwatch)
+        {
+            var lastInstanceCount = 0L;
+            var lastRequestCount = 0L;
             var lastElapsed = TimeSpan.Zero;
 
-            _stopwatch.Start();
+            stopwatch.Start();
 
-            while (_stopwatch.Elapsed < _duration)
+            while (stopwatch.Elapsed < duration)
             {
                 await Task.Delay(TimeSpan.FromSeconds(1));
 
-                var thisInstanceCount = ContextInstances;
-                var thisRequestCount = RequestsProcessed;
-                var thisElapsed = _stopwatch.Elapsed;
+                var thisInstanceCount = _contextInstances;
+                var thisRequestCount = _requestsProcessed;
+                var thisElapsed = stopwatch.Elapsed;
 
                 var currentElapsed = thisElapsed - lastElapsed;
                 var currentRequests = thisRequestCount - lastRequestCount;
@@ -98,29 +137,11 @@ namespace Demos
             }
 
             Console.WriteLine("");
-            Console.WriteLine($"Total context creations: {ContextInstances}");
+            Console.WriteLine($"Total context creations: {_contextInstances}");
             Console.WriteLine(
-                $"Requests per second:     {Math.Round(RequestsProcessed / _stopwatch.Elapsed.TotalSeconds)}");
+                $"Requests per second:     {Math.Round(_requestsProcessed / stopwatch.Elapsed.TotalSeconds)}");
 
-            _stopwatch.Stop();
+            stopwatch.Stop();
         }
-    }
-
-    public class BloggingContext : DbContext
-    {
-        public BloggingContext(DbContextOptions<BloggingContext> options)
-            : base(options)
-        {
-            Interlocked.Increment(ref Program.ContextInstances);
-        }
-
-        public DbSet<Blog> Blogs { get; set; }
-    }
-
-    public class Blog
-    {
-        public int BlogId { get; set; }
-        public string Name { get; set; }
-        public string Url { get; set; }
     }
 }
