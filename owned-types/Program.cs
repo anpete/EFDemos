@@ -10,13 +10,10 @@ namespace Demos
         {
             RecreateDatabase();
 
-            Console.Write(" Inserting Data......");
+            Console.Write("Inserting Data......");
 
             using (var db = new CustomerContext())
             {
-                var usa = new Country { Id = "USA", Name = "United States of America" };
-                db.Add(usa);
-
                 db.Customers.Add(new Customer
                 {
                     Name = "Rowan",
@@ -24,25 +21,19 @@ namespace Demos
                     {
                         LineOne = "Microsoft Campus",
                         LineTwo = "One Microsoft Way",
-                        Location = new Location
-                        {
-                            CityOrTown = "Redmond",
-                            PostalOrZipCode = "98052",
-                            StateOrProvince = "WA",
-                            Country = usa
-                        }
+                        CityOrTown = "Redmond",
+                        PostalOrZipCode = "98052",
+                        StateOrProvince = "WA",
+                        CountryName = "United States of America"
                     },
                     PhysicalAddress = new Address
                     {
                         LineOne = "Washington State Convention Center",
                         LineTwo = "705 Pike St",
-                        Location = new Location
-                        {
-                            CityOrTown = "Seattle",
-                            PostalOrZipCode = "98101",
-                            StateOrProvince = "WA",
-                            Country = usa
-                        }
+                        CityOrTown = "Seattle",
+                        PostalOrZipCode = "98101",
+                        StateOrProvince = "WA",
+                        CountryName = "United States of America"
                     }
                 });
 
@@ -58,11 +49,15 @@ namespace Demos
             {
                 Console.WriteLine("Recreating database from current model");
                 Console.Write(" Dropping database...");
+                
                 db.Database.EnsureDeleted();
+
                 Console.WriteLine(" done");
 
                 Console.Write(" Creating database...");
+
                 db.Database.EnsureCreated();
+
                 Console.WriteLine(" done");
             }
         }
@@ -75,20 +70,14 @@ namespace Demos
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
-                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.OwnedTypes;Trusted_Connection=True;")
-                .UseLoggerFactory(new LoggerFactory().AddConsole());
+                .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.OwnedTypes;Trusted_Connection=True;ConnectRetryCount=0;")
+                .UseLoggerFactory(new LoggerFactory().AddConsole((s, l) => l == LogLevel.Information && !s.EndsWith("Connection")));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Customer>()
-                .OwnsOne(c => c.WorkAddress)
-                .OwnsOne(a => a.Location);
-
-            modelBuilder.Entity<Customer>()
-                .OwnsOne(c => c.PhysicalAddress)
-                .ToTable("Customers_Location")
-                .OwnsOne(a => a.Location);
+            // Fluent configuration of owned types.
+            
         }
     }
 
@@ -105,22 +94,9 @@ namespace Demos
     {
         public string LineOne { get; set; }
         public string LineTwo { get; set; }
-        public Location Location { get; set; }
-    }
-
-    public class Location
-    {
         public string PostalOrZipCode { get; set; }
         public string StateOrProvince { get; set; }
         public string CityOrTown { get; internal set; }
-
-        public string CountryId { get; set; }
-        public Country Country { get; set; }
-    }
-
-    public class Country
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
+        public string CountryName { get; set; }
     }
 }

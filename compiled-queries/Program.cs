@@ -23,34 +23,35 @@ namespace Demos
                     {
                         foreach (var id in accountNumbers)
                         {
+                            // Use auto-compiled query
                             var customer = db.Customers.Single(c => c.AccountNumber == id);
                         }
                     }
                 },
-                "Regular");
+                name: "Regular");
 
             RunTest(
                 accountNumbers =>
                 {
-                    var query = EF.CompileQuery((AdventureWorksContext db, string id)
-                        => db.Customers.Single(c => c.AccountNumber == id));
-
+                    // Create explicit compiled query
+                    
                     using (var db = new AdventureWorksContext())
                     {
                         foreach (var id in accountNumbers)
                         {
-                            var customer = query(db, id);
+                            // Invoke the compiled query
+                            
                         }
                     }
                 },
-                "Compiled");
+                name: "Compiled");
         }
 
         private static void RunTest(Action<string[]> test, string name)
         {
             var accountNumbers = GetAccountNumbers(500);
-
             var stopwatch = new Stopwatch();
+            
             stopwatch.Start();
 
             test(accountNumbers);
