@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace Demos
 {
@@ -21,6 +22,10 @@ namespace Demos
             using (var db = new BloggingContext())
             {
                 // 1) FromSql with traditional format string.
+                var blogs = db.Blogs.FromSql("SELECT * FROM dbo.SearchBlogs({0})", term)
+                    .OrderBy(b => b.Url)
+                    .Select(b => b.Url)
+                    .ToList();
 
                 // 2) FromSql with naive interpolation
 
@@ -28,10 +33,10 @@ namespace Demos
 
                 Console.WriteLine();
 
-                //                foreach (var blog in blogs)
-                //                {
-                //                    Console.WriteLine(blog);
-                //                }
+                foreach (var blog in blogs)
+                {
+                    Console.WriteLine(blog);
+                }
 
                 Console.WriteLine();
             }

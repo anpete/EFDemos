@@ -17,7 +17,7 @@ namespace Demos
         {
             SetupDatabase();
 
-            using (var db = new BloggingContext("rowan"))
+            using (var db = new BloggingContext("Diego"))
             {
                 var blogs = db.Blogs
                     .Include(b => b.Posts)
@@ -40,7 +40,7 @@ namespace Demos
 
         private static void SetupDatabase()
         {
-            using (var db = new BloggingContext("rowan"))
+            using (var db = new BloggingContext("diego"))
             {
                 if (db.Database.EnsureCreated())
                 {
@@ -70,9 +70,9 @@ namespace Demos
 
                     db.SaveChanges();
 
-                    using (var jeffDb = new BloggingContext("jeff"))
+                    using (var andrewDb = new BloggingContext("andrew"))
                     {
-                        jeffDb.Blogs.Add(
+                        andrewDb.Blogs.Add(
                             new Blog
                             {
                                 Url = "http://sample.com/blogs/catfish",
@@ -83,7 +83,7 @@ namespace Demos
                                 }
                             });
 
-                        jeffDb.SaveChanges();
+                        andrewDb.SaveChanges();
                     }
 
                     db.Posts

@@ -16,9 +16,9 @@ namespace Demos
 
             using (var db = new BloggingContext())
             {
-                var blog = new Blog { Name = "Rowan's Blog" };
+                var blog = new Blog { Name = ".NET Blog" };
 
-                blog.SetUrl("http://romiller.com");
+                blog.SetUrl("https://blogs.msdn.microsoft.com/dotnet");
 
                 db.Blogs.Add(blog);
                 db.SaveChanges();

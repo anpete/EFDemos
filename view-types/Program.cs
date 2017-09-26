@@ -83,7 +83,6 @@ namespace Demos
 
         public class OrderView
         {
-            public int Id { get; set; }
             public int Amount { get; set; }
             public string ProductName { get; set; }
             public string CustomerName { get; set; }

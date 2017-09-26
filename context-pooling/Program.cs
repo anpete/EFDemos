@@ -23,10 +23,8 @@ namespace Demos
         public static long InstanceCount;
 
         public BloggingContext(DbContextOptions options)
-            : base(options)
-        {
-            Interlocked.Increment(ref InstanceCount);
-        }
+            : base(options) 
+            => Interlocked.Increment(ref InstanceCount);
 
         public DbSet<Blog> Blogs { get; set; }
     }
@@ -37,10 +35,7 @@ namespace Demos
 
         public BlogController(BloggingContext context) => _context = context;
 
-        public async Task ActionAsync()
-        {
-            await _context.Blogs.FirstAsync();
-        }
+        public async Task ActionAsync() => await _context.Blogs.FirstAsync();
     }
 
     public class Startup
@@ -51,12 +46,6 @@ namespace Demos
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<BloggingContext>(c => c.UseSqlServer(ConnectionString));
-
-            #region Enable pooling
-
-            //services.AddDbContextPool<BloggingContext>(c => c.UseSqlServer(ConnectionString));
-
-            #endregion
         }
     }
 
