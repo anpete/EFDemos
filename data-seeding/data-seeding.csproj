@@ -12,8 +12,4 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.1.0-preview1-*" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
 </Project>
