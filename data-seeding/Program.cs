@@ -9,7 +9,6 @@ namespace data_seeding
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
         }
     }
 
@@ -29,7 +28,7 @@ namespace data_seeding
         {
             modelBuilder.Entity<Theme>().SeedData(
                 new Theme { ThemeId = 1, Name = "MSDN", TitleColor = Color.DarkGray.ToArgb() },
-                new Theme { ThemeId = 2, Name = "TechNet", TitleColor = Color.DarkCyan.ToArgb() }, 
+                new Theme { ThemeId = 2, Name = "TechNet", TitleColor = Color.DarkCyan.ToArgb() },
                 new Theme { ThemeId = 3, Name = "Personal", TitleColor = Color.LightBlue.ToArgb() });
         }
 
