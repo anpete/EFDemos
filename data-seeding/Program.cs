@@ -12,7 +12,8 @@ namespace Demos
             {
                 foreach(var theme in db.Themes)
                 {
-                    Console.WriteLine($"Id = {theme.ThemeId}, Name = {theme.Name}, Color = {theme.TitleColor}");
+                    Console.WriteLine(
+                        $"Id = {theme.ThemeId}, Name = {theme.Name}, Color = {theme.TitleColor}");
                 }
             }
         }

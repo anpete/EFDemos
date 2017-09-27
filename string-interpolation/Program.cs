@@ -29,6 +29,7 @@ namespace Demos
 
                 // 3) FromSql with interpolation support
 
+
                 Console.WriteLine();
 
                 foreach (var blog in blogs)
