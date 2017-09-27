@@ -34,14 +34,15 @@ namespace Demos
                 accountNumbers =>
                     {
                         // Create explicit compiled query
-
+                        var query = EF.CompileQuery((AdventureWorksContext db, string id)
+                            => db.Customers.Single(c => c.AccountNumber == id));
 
                         using (var db = new AdventureWorksContext())
                         {
                             foreach (var id in accountNumbers)
                             {
                                 // Invoke the compiled query
-
+                                query(db, id);
                             }
                         }
                     },

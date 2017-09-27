@@ -121,7 +121,11 @@ namespace Demos
             modelBuilder.Entity<Blog>().Property<string>("TenantId").HasField("_tenantId");
 
             // Configure entity filters
+            modelBuilder.Entity<Post>().HasQueryFilter(p => !p.IsDeleted);
 
+            modelBuilder
+                .Entity<Blog>()
+                .HasQueryFilter(b => EF.Property<string>(b, "TenantId") == _tenantId);
         }
 
         public override int SaveChanges()

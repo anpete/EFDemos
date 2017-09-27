@@ -19,16 +19,24 @@ namespace Demos
             using (var db = new BloggingContext())
             {
                 // 1) FromSql with traditional format string.
-                var blogs = db.Blogs.FromSql("SELECT * FROM dbo.SearchBlogs({0})", term)
+                //var blogs = db.Blogs.FromSql("SELECT * FROM dbo.SearchBlogs({0})", term)
+                //    .OrderBy(b => b.Url)
+                //    .Select(b => b.Url)
+                //    .ToList();
+
+                // 2) FromSql with naïve interpolation
+                FormattableString sql = $"SELECT * FROM dbo.SearchBlogs({term})";
+
+                var blogs = db.Blogs.FromSql(sql)
                     .OrderBy(b => b.Url)
                     .Select(b => b.Url)
                     .ToList();
 
-                // 2) FromSql with naïve interpolation
-
-
                 // 3) FromSql with interpolation support
-
+                //var blogs = db.Blogs.FromSql($"SELECT * FROM dbo.SearchBlogs({term})")
+                //    .OrderBy(b => b.Url)
+                //    .Select(b => b.Url)
+                //    .ToList();
 
                 Console.WriteLine();
 

@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace Demos
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -35,7 +35,7 @@ namespace Demos
             modelBuilder
                 .Entity<Theme>()
                 .SeedData(
-                    new Theme { ThemeId = 1, Name = "MSDN", TitleColor = Color.Red.Name },
+                    new Theme { ThemeId = 1, Name = "MSDN", TitleColor = Color.AliceBlue.Name },
                     new Theme { ThemeId = 2, Name = "TechNet", TitleColor = Color.DarkCyan.Name },
                     new Theme { ThemeId = 3, Name = "Personal", TitleColor = Color.LightBlue.Name });
         }

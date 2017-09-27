@@ -12,7 +12,10 @@ namespace Demos
 
             using (var db = new OrdersContext())
             {
-
+                foreach (var orderView in db.OrderViews)
+                {
+                    Console.WriteLine(orderView);
+                }
             }
         }
 
@@ -34,7 +37,7 @@ namespace Demos
 
                     db.Set<Product>().AddRange(empanada, meatPie);
 
-                    db.Orders.Add(new Order { Amount = 12, Product = empanada, Customer = diego });
+                    db.Orders.Add(new Order { Amount = 21, Product = empanada, Customer = diego });
                     db.Orders.Add(new Order { Amount = 20, Product = meatPie, Customer = andrew });
 
                     db.SaveChanges();
@@ -52,12 +55,12 @@ namespace Demos
         public class OrdersContext : DbContext
         {
             public DbSet<Order> Orders { get; set; }
-
+            public DbView<OrderView> OrderViews => View<OrderView>();
 
             protected override void OnModelCreating(ModelBuilder modelBuilder)
             {
                 // Configure a view type
-
+                modelBuilder.View<OrderView>().ToTable("OrderSummary");
             }
 
             protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -76,6 +79,17 @@ namespace Demos
             public Customer Customer { get; set; }
         }
         
+        public class OrderView
+        {
+            public int Amount { get; set; }
+            public string ProductName { get; set; }
+            public string CustomerName { get; set; }
+
+            public override string ToString()
+            {
+                return $"{CustomerName} ordered {Amount} of {ProductName}";
+            }
+        }
 
         public class Product
         {

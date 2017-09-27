@@ -42,7 +42,7 @@ namespace Demos
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<BloggingContext>(c => c.UseSqlServer(ConnectionString));
+            services.AddDbContextPool<BloggingContext>(c => c.UseSqlServer(ConnectionString));
         }
     }
 
