@@ -1,7 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -27,7 +24,8 @@ namespace Demos
                     .Select(b => b.Url)
                     .ToList();
 
-                // 2) FromSql with naive interpolation
+                // 2) FromSql with naïve interpolation
+
 
                 // 3) FromSql with interpolation support
 

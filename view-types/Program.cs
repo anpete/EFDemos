@@ -1,7 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
-
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -15,10 +12,7 @@ namespace Demos
 
             using (var db = new OrdersContext())
             {
-                foreach (var orderView in db.OrderViews)
-                {
-                    Console.WriteLine(orderView);
-                }
+
             }
         }
 
@@ -58,11 +52,12 @@ namespace Demos
         public class OrdersContext : DbContext
         {
             public DbSet<Order> Orders { get; set; }
-            public DbView<OrderView> OrderViews => View<OrderView>();
+
 
             protected override void OnModelCreating(ModelBuilder modelBuilder)
             {
-                modelBuilder.View<OrderView>().ToTable("OrderSummary");
+                // Configure a view type
+
             }
 
             protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -80,18 +75,7 @@ namespace Demos
             public Product Product { get; set; }
             public Customer Customer { get; set; }
         }
-
-        public class OrderView
-        {
-            public int Amount { get; set; }
-            public string ProductName { get; set; }
-            public string CustomerName { get; set; }
-
-            public override string ToString()
-            {
-                return $"{CustomerName} ordered {Amount} of {ProductName}";
-            }
-        }
+        
 
         public class Product
         {

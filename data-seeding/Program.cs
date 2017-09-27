@@ -31,10 +31,12 @@ namespace Demos
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Theme>().SeedData(
-                new Theme { ThemeId = 1, Name = "MSDN", TitleColor = Color.Magenta.Name },
-                new Theme { ThemeId = 2, Name = "TechNet", TitleColor = Color.DarkCyan.Name },
-                new Theme { ThemeId = 3, Name = "Personal", TitleColor = Color.LightBlue.Name });
+            modelBuilder
+                .Entity<Theme>()
+                .SeedData(
+                    new Theme { ThemeId = 1, Name = "MSDN", TitleColor = Color.Red.Name },
+                    new Theme { ThemeId = 2, Name = "TechNet", TitleColor = Color.DarkCyan.Name },
+                    new Theme { ThemeId = 3, Name = "Personal", TitleColor = Color.LightBlue.Name });
         }
 
         public class Blog

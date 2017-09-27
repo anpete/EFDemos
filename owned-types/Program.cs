@@ -78,6 +78,7 @@ namespace Demos
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Fluent configuration of owned types.
+
         }
     }
 
