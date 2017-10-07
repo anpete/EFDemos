@@ -1,21 +1,21 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore;
 using System.Drawing;
+using Microsoft.EntityFrameworkCore;
 
 namespace Demos
 {
-    class Program
+    public class Blog
     {
-        static void Main(string[] args)
-        {
-            using (var db = new BloggingContext())
-            {
-                foreach(var theme in db.Themes)
-                {
-                    Console.WriteLine($"Id = {theme.ThemeId}, Name = {theme.Name}, Color = {theme.TitleColor}");
-                }
-            }
-        }
+        public int BlogId { get; set; }
+        public string BlogUrl { get; set; }
+        public Theme Theme { get; set; }
+    }
+
+    public class Theme
+    {
+        public int ThemeId { get; set; }
+        public string Name { get; set; }
+        public string TitleColor { get; set; }
     }
 
     public class BloggingContext : DbContext
@@ -37,18 +37,19 @@ namespace Demos
                 new Theme { ThemeId = 3, Name = "Personal", TitleColor = Color.LightBlue.Name });
         }
 
-        public class Blog
-        {
-            public int BlogId { get; set; }
-            public string BlogUrl { get; set; }
-            public Theme Theme { get; set; }
-        }
+    }
 
-        public class Theme
+    class Program
+    {
+        static void Main(string[] args)
         {
-            public int ThemeId { get; set; }
-            public string Name { get; set; }
-            public string TitleColor { get; set; }
+            using (var db = new BloggingContext())
+            {
+                foreach (var theme in db.Themes)
+                {
+                    Console.WriteLine($"Id = {theme.ThemeId}, Name = {theme.Name}, Color = {theme.TitleColor}");
+                }
+            }
         }
     }
 }
