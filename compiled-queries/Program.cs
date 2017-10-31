@@ -10,7 +10,7 @@ namespace Demos
     {
         private static void Main()
         {
-            // Warmup
+            // Warmup model, DB etc.
             using (var db = new AdventureWorksContext())
             {
                 var customer = db.Customers.First();

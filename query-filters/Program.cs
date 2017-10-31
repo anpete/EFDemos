@@ -14,7 +14,7 @@ namespace Demos
         {
             SetupDatabase();
 
-            using (var db = new BloggingContext("Diego"))
+            using (var db = new BloggingContext("diego"))
             {
                 var blogs = db.Blogs
                     .Include(b => b.Posts)
@@ -128,14 +128,18 @@ namespace Demos
         {
             ChangeTracker.DetectChanges();
 
-            foreach (var item in ChangeTracker.Entries().Where(
-                e =>
-                    e.State == EntityState.Added && e.Metadata.GetProperties().Any(p => p.Name == "TenantId")))
+            foreach (var item 
+                in ChangeTracker.Entries()
+                    .Where(e => e.State == EntityState.Added 
+                             && e.Metadata.GetProperties()
+                                   .Any(p => p.Name == "TenantId")))
             {
                 item.CurrentValues["TenantId"] = _tenantId;
             }
 
-            foreach (var item in ChangeTracker.Entries<Post>().Where(e => e.State == EntityState.Deleted))
+            foreach (var item 
+                in ChangeTracker.Entries<Post>()
+                    .Where(e => e.State == EntityState.Deleted))
             {
                 item.State = EntityState.Modified;
                 item.CurrentValues["IsDeleted"] = true;

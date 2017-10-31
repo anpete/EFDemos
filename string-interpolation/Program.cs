@@ -24,12 +24,10 @@ namespace Demos
                     .Select(b => b.Url)
                     .ToList();
 
-                // 2) FromSql with naïve interpolation
-
-
-                // 3) FromSql with interpolation support
-
-
+                // 2) FromSql with interpolation support
+                
+                // 3) FromSql with naïve interpolation
+                
                 Console.WriteLine();
 
                 foreach (var blog in blogs)

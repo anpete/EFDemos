@@ -12,12 +12,8 @@ namespace Demos
         {
             using (var db = new BloggingContext())
             {
-                foreach(var count in db.Themes
-                    .GroupBy(t => t.TitleColor)
-                    .Select(g => new { Color = g.Key, Count = g.Count() }))
-                {
-                    Console.WriteLine($"Color = {count.Color}, Count = {count.Count}");
-                }
+                // Run the GroupBy query.
+
             }
         }
     }
