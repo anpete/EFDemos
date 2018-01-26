@@ -3,9 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Demos
 {
@@ -21,9 +21,16 @@ namespace Demos
                 {
                     Console.WriteLine(blog.Url);
 
-                    foreach (var post in blog.Posts) // Access the Posts navigation property
+                    if (!blog.Posts.Any())  // Access the Posts navigation property
                     {
-                        Console.WriteLine($" - {post.Title}");
+                        Console.WriteLine("No posts!");
+                    }
+                    else
+                    {
+                        foreach (var post in blog.Posts)
+                        {
+                            Console.WriteLine($" - {post.Title}");
+                        }
                     }
 
                     Console.WriteLine();
@@ -87,13 +94,14 @@ namespace Demos
         {
             optionsBuilder
                 .UseSqlServer(
-                    @"Server=(localdb)\mssqllocaldb;Database=Demo.LazyLoading;Trusted_Connection=True;ConnectRetryCount=0;")
-                .UseLoggerFactory(new LoggerFactory().AddConsole((s, l) => l == LogLevel.Information && !s.EndsWith("Connection")));
+                    @"Server=(localdb)\mssqllocaldb;Database=Demo.LazyLoading;Trusted_Connection=True;ConnectRetryCount=0;");
         }
     }
 
     public class Blog
     {
+        private ICollection<Post> _posts = new List<Post>();
+
         public Blog()
         {
         }
@@ -102,7 +110,13 @@ namespace Demos
         public string Name { get; set; }
         public string Url { get; set; }
 
-        private ICollection<Post> _posts = new List<Post>();
+        //public ICollection<Post> Posts
+        //{
+        //    get { return _posts; }
+        //    set { _posts = value; }
+        //}
+
+        #region Use Lazy Loading
 
         public ICollection<Post> Posts
         {
@@ -118,6 +132,8 @@ namespace Demos
         {
             _lazyLoader = lazyLoader;
         }
+
+        #endregion
 
         #endregion
     }
