@@ -33,6 +33,8 @@ namespace Demos
                     Console.WriteLine();
                 }
             }
+
+            Console.Read();
         }
 
         private static void SetupDatabase()

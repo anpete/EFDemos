@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using System.Drawing;
 using Microsoft.Extensions.Logging;
 
 namespace Demos
@@ -12,15 +11,30 @@ namespace Demos
         {
             using (var db = new BloggingContext())
             {
-                // Run the GroupBy query.
+                db.Database.EnsureDeleted();
+                db.Database.EnsureCreated();
+
+                db.AddRange(
+                    new Theme { Name = "MSDN", TitleColor = Color.Red },
+                    new Theme { Name = "TechNet", TitleColor = Color.Red },
+                    new Theme { Name = "Personal", TitleColor = Color.LightBlue });
+
+                db.SaveChanges();
+            }
+
+            Console.Read();
+
+            using (var db = new BloggingContext())
+            {
 
             }
+
+            Console.Read();
         }
     }
 
     public class BloggingContext : DbContext
     {
-        public DbSet<Blog> Blogs { get; set; }
         public DbSet<Theme> Themes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -35,26 +49,20 @@ namespace Demos
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder
-                .Entity<Theme>()
-                .SeedData(
-                    new Theme { ThemeId = 1, Name = "MSDN", TitleColor = Color.Red.Name },
-                    new Theme { ThemeId = 2, Name = "TechNet", TitleColor = Color.Red.Name },
-                    new Theme { ThemeId = 3, Name = "Personal", TitleColor = Color.LightBlue.Name });
-        }
 
-        public class Blog
-        {
-            public int BlogId { get; set; }
-            public string BlogUrl { get; set; }
-            public Theme Theme { get; set; }
         }
+    }
 
-        public class Theme
-        {
-            public uint ThemeId { get; set; }
-            public string Name { get; set; }
-            public string TitleColor { get; set; }
-        }
+    public class Theme
+    {
+        public uint ThemeId { get; set; }
+        public string Name { get; set; }
+        public Color TitleColor { get; set; }
+    }
+
+    public enum Color
+    {
+        Red,
+        LightBlue
     }
 }

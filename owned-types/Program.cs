@@ -10,14 +10,14 @@ namespace Demos
         {
             RecreateDatabase();
 
-            Console.Write("Inserting Data......");
+            Console.WriteLine("Inserting Data......");
 
             using (var db = new CustomerContext())
             {
                 db.Customers.Add(
                     new Customer
                     {
-                        Name = "Andrew",
+                        Name = "Diego",
                         WorkAddress = new Address
                         {
                             LineOne = "Microsoft Campus",
@@ -27,7 +27,7 @@ namespace Demos
                             StateOrProvince = "WA",
                             CountryName = "United States of America"
                         },
-                        PhysicalAddress = new Address
+                        HomeAddress = new Address
                         {
                             LineOne = "Washington State Convention Center",
                             LineTwo = "705 Pike St",
@@ -41,7 +41,8 @@ namespace Demos
                 db.SaveChanges();
             }
 
-            Console.WriteLine(" done");
+            Console.WriteLine("done");
+            Console.Read();
         }
 
         private static void RecreateDatabase()
@@ -49,17 +50,17 @@ namespace Demos
             using (var db = new CustomerContext())
             {
                 Console.WriteLine("Recreating database from current model");
-                Console.Write(" Dropping database...");
+                Console.WriteLine(" Dropping database...");
 
                 db.Database.EnsureDeleted();
 
-                Console.WriteLine(" done");
+                Console.WriteLine("done");
 
-                Console.Write(" Creating database...");
+                Console.WriteLine(" Creating database...");
 
                 db.Database.EnsureCreated();
 
-                Console.WriteLine(" done");
+                Console.WriteLine("done");
             }
         }
     }
@@ -88,7 +89,7 @@ namespace Demos
         public string Name { get; set; }
 
         public Address WorkAddress { get; set; }
-        public Address PhysicalAddress { get; set; }
+        public Address HomeAddress { get; set; }
     }
 
     public class Address

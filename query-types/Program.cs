@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -14,6 +15,8 @@ namespace Demos
             {
 
             }
+
+            Console.Read();
         }
 
         private static void SetupDatabase()
@@ -25,23 +28,23 @@ namespace Demos
                 if (db.Database.EnsureCreated())
                 {
                     var diego = new Customer { Name = "Diego" };
-                    var andrew = new Customer { Name = "Andrew" };
+                    var smit = new Customer { Name = "Smit" };
 
-                    db.Set<Customer>().AddRange(diego, andrew);
+                    db.Set<Customer>().AddRange(diego, smit);
 
                     var empanada = new Product { Name = "Empanada" };
-                    var meatPie = new Product { Name = "Meat Pie" };
+                    var applePie = new Product { Name = "Apple Pie" };
 
-                    db.Set<Product>().AddRange(empanada, meatPie);
+                    db.Set<Product>().AddRange(empanada, applePie);
 
                     db.Orders.Add(new Order { Amount = 12, Product = empanada, Customer = diego });
-                    db.Orders.Add(new Order { Amount = 20, Product = meatPie, Customer = andrew });
+                    db.Orders.Add(new Order { Amount = 5, Product = applePie, Customer = smit });
 
                     db.SaveChanges();
 
                     db.Database.ExecuteSqlCommand(
                         @"CREATE VIEW [OrderSummary] AS
-                            SELECT o.Id, o.Amount, p.Name AS ProductName, c.Name AS CustomerName
+                            SELECT o.Amount, p.Name AS ProductName, c.Name AS CustomerName
                             FROM Orders o
                             INNER JOIN Product p ON o.ProductId = p.Id
                             INNER JOIN Customer c ON o.CustomerId = c.Id");
@@ -52,11 +55,13 @@ namespace Demos
         public class OrdersContext : DbContext
         {
             public DbSet<Order> Orders { get; set; }
+            // DbQuery OrderView
 
 
             protected override void OnModelCreating(ModelBuilder modelBuilder)
             {
                 // Configure a view type
+
 
             }
 
@@ -75,7 +80,6 @@ namespace Demos
             public Product Product { get; set; }
             public Customer Customer { get; set; }
         }
-        
 
         public class Product
         {
