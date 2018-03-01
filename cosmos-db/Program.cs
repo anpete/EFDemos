@@ -103,6 +103,9 @@ namespace Demos
 
     public class BloggingContext : DbContext
     {
+        private static readonly ILoggerFactory loggerFactory = new LoggerFactory()
+            .AddConsole((s, l) => l == LogLevel.Debug && !s.EndsWith("Query"));
+
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<SpecialBlog> SpecialBlogs { get; set; }
         public DbSet<Post> Posts { get; set; }
@@ -115,7 +118,7 @@ namespace Demos
                     "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==",
                     "SampleApp")
                 .EnableSensitiveDataLogging()
-                .UseLoggerFactory(new LoggerFactory().AddConsole((s, l) => l == LogLevel.Debug && !s.EndsWith("Query")));
+                .UseLoggerFactory(loggerFactory);
         }
     }
 
