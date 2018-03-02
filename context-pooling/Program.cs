@@ -42,7 +42,7 @@ namespace Demos
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<BloggingContext>(c => c.UseSqlServer(ConnectionString));
+            services.AddDbContextPool<BloggingContext>(c => c.UseSqlServer(ConnectionString));
         }
     }
 
@@ -133,6 +133,8 @@ namespace Demos
                 $"Requests per second:     {Math.Round(_requestsProcessed / stopwatch.Elapsed.TotalSeconds)}");
 
             stopwatch.Stop();
+
+            return;
         }
     }
 }

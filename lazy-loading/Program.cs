@@ -35,6 +35,8 @@ namespace Demos
 
                     Console.WriteLine();
                 }
+
+                Console.Read();
             }
         }
 
@@ -110,32 +112,12 @@ namespace Demos
         public string Name { get; set; }
         public string Url { get; set; }
 
-        //public ICollection<Post> Posts
-        //{
-        //    get { return _posts; }
-        //    set { _posts = value; }
-        //}
-
-        #region Use Lazy Loading
-
         public ICollection<Post> Posts
         {
-            get => _lazyLoader.Load(this, ref _posts);
-            set => _posts = value;
+            get { return _posts; }
+            set { _posts = value; }
         }
 
-        #region Lazy loading infra.
-
-        private readonly Action<object, string> _lazyLoader;
-
-        private Blog(Action<object, string> lazyLoader)
-        {
-            _lazyLoader = lazyLoader;
-        }
-
-        #endregion
-
-        #endregion
     }
 
     public class Post
@@ -146,18 +128,4 @@ namespace Demos
         public int BlogId { get; set; }
     }
 
-    public static class TestPocoLoadingExtensions
-    {
-        public static TRelated Load<TRelated>(
-            this Action<object, string> loader,
-            object entity,
-            ref TRelated navigationField,
-            [CallerMemberName] string navigationName = null)
-            where TRelated : class
-        {
-            loader?.Invoke(entity, navigationName);
-
-            return navigationField;
-        }
-    }
 }
