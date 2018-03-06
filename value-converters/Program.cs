@@ -1,25 +1,27 @@
-﻿using System;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using System.Drawing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Demos
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             using (var db = new BloggingContext())
             {
-                // Run the GroupBy query.
-
             }
         }
     }
 
     public class BloggingContext : DbContext
     {
+        private static readonly ILoggerFactory _loggerFactory = new LoggerFactory()
+            .AddConsole((s, l) => l == LogLevel.Information && !s.EndsWith("Connection"));
+
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Theme> Themes { get; set; }
 
@@ -27,10 +29,7 @@ namespace Demos
         {
             optionsBuilder
                 .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.ValueConverters;Trusted_Connection=True;ConnectRetryCount=0")
-                .UseLoggerFactory(
-                    new LoggerFactory().AddConsole(
-                        (s, l) =>
-                            l == LogLevel.Information && !s.EndsWith("Connection")));
+                .UseLoggerFactory(_loggerFactory);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

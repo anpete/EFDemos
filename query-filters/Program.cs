@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -98,6 +101,9 @@ namespace Demos
 
     public class BloggingContext : DbContext
     {
+        private static readonly ILoggerFactory _loggerFactory = new LoggerFactory()
+            .AddConsole((s, l) => l == LogLevel.Information && !s.EndsWith("Connection"));
+
         private readonly string _tenantId;
 
         public BloggingContext(string tenant)
@@ -113,7 +119,7 @@ namespace Demos
             optionsBuilder
                 .UseSqlServer(
                     @"Server=(localdb)\mssqllocaldb;Database=Demo.QueryFilters;Trusted_Connection=True;ConnectRetryCount=0;")
-                .UseLoggerFactory(new LoggerFactory().AddConsole((s, l) => l == LogLevel.Information && !s.EndsWith("Connection")));
+                .UseLoggerFactory(_loggerFactory);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -121,23 +127,23 @@ namespace Demos
             modelBuilder.Entity<Blog>().Property<string>("TenantId").HasField("_tenantId");
 
             // Configure entity filters
-
         }
 
         public override int SaveChanges()
         {
             ChangeTracker.DetectChanges();
 
-            foreach (var item 
+            foreach (var item
                 in ChangeTracker.Entries()
-                    .Where(e => e.State == EntityState.Added 
+                    .Where(
+                        e => e.State == EntityState.Added
                              && e.Metadata.GetProperties()
-                                   .Any(p => p.Name == "TenantId")))
+                                 .Any(p => p.Name == "TenantId")))
             {
                 item.CurrentValues["TenantId"] = _tenantId;
             }
 
-            foreach (var item 
+            foreach (var item
                 in ChangeTracker.Entries<Post>()
                     .Where(e => e.State == EntityState.Deleted))
             {

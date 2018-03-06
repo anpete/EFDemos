@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
 
 namespace Demos.Migrations
 {
@@ -18,10 +19,7 @@ namespace Demos.Migrations
                     Name = table.Column<string>(nullable: true),
                     TitleColor = table.Column<string>(nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Themes", x => x.ThemeId);
-                });
+                constraints: table => { table.PrimaryKey("PK_Themes", x => x.ThemeId); });
 
             migrationBuilder.CreateTable(
                 name: "Blogs",
@@ -33,15 +31,15 @@ namespace Demos.Migrations
                     ThemeId = table.Column<uint>(nullable: true)
                 },
                 constraints: table =>
-                {
-                    table.PrimaryKey("PK_Blogs", x => x.BlogId);
-                    table.ForeignKey(
-                        name: "FK_Blogs_Themes_ThemeId",
-                        column: x => x.ThemeId,
-                        principalTable: "Themes",
-                        principalColumn: "ThemeId",
-                        onDelete: ReferentialAction.Restrict);
-                });
+                    {
+                        table.PrimaryKey("PK_Blogs", x => x.BlogId);
+                        table.ForeignKey(
+                            name: "FK_Blogs_Themes_ThemeId",
+                            column: x => x.ThemeId,
+                            principalTable: "Themes",
+                            principalColumn: "ThemeId",
+                            onDelete: ReferentialAction.Restrict);
+                    });
 
             migrationBuilder.InsertData(
                 table: "Themes",

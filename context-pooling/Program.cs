@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -20,7 +23,7 @@ namespace Demos
         public static long InstanceCount;
 
         public BloggingContext(DbContextOptions options)
-            : base(options) 
+            : base(options)
             => Interlocked.Increment(ref InstanceCount);
 
         public DbSet<Blog> Blogs { get; set; }
