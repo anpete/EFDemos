@@ -45,7 +45,7 @@ namespace Demos
     public class BloggingContext : DbContext
     {
         private static readonly ILoggerFactory _loggerFactory = new LoggerFactory()
-            .AddConsole((s, l) => l == LogLevel.Information && !s.EndsWith("Connection"));
+            .AddConsole((s, l) => l == LogLevel.Information && s.EndsWith("Command"));
 
         public DbSet<Blog> Blogs { get; set; }
 

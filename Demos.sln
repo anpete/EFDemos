@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "lazy-loading", "lazy-loadin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "cosmos-db", "cosmos-db\cosmos-db.csproj", "{C6CD1AB9-192E-4B65-9815-BD0BCB37517A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "analyzers", "analyzers\analyzers.csproj", "{9856727F-1086-4C1E-B068-323A7F6201D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{C6CD1AB9-192E-4B65-9815-BD0BCB37517A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6CD1AB9-192E-4B65-9815-BD0BCB37517A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6CD1AB9-192E-4B65-9815-BD0BCB37517A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9856727F-1086-4C1E-B068-323A7F6201D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9856727F-1086-4C1E-B068-323A7F6201D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9856727F-1086-4C1E-B068-323A7F6201D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9856727F-1086-4C1E-B068-323A7F6201D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,9 +7,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Demos
 {
-    internal class Program
+    public class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
             using (var db = new BloggingContext())
             {
@@ -20,7 +20,7 @@ namespace Demos
     public class BloggingContext : DbContext
     {
         private static readonly ILoggerFactory _loggerFactory = new LoggerFactory()
-            .AddConsole((s, l) => l == LogLevel.Information && !s.EndsWith("Connection"));
+            .AddConsole((s, l) => l == LogLevel.Information && s.EndsWith("Command"));
 
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Theme> Themes { get; set; }

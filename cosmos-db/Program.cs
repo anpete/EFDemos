@@ -12,7 +12,7 @@ namespace Demos
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static void Main()
         {
             var blogId = 1;
             var postId = 1;

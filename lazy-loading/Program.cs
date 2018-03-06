@@ -94,7 +94,8 @@ namespace Demos
         {
             optionsBuilder
                 .UseSqlServer(
-                    @"Server=(localdb)\mssqllocaldb;Database=Demo.LazyLoading;Trusted_Connection=True;ConnectRetryCount=0;");
+                    @"Server=(localdb)\mssqllocaldb;Database=Demo.LazyLoading;Trusted_Connection=True;ConnectRetryCount=0;")
+                .UseLazyLoadingProxies();
         }
     }
 
@@ -104,7 +105,7 @@ namespace Demos
         public string Name { get; set; }
         public string Url { get; set; }
 
-        public virtual ICollection<Post> Posts { get; set; }
+        public ICollection<Post> Posts { get; set; }
     }
 
     public class Post

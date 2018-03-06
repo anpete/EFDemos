@@ -53,7 +53,7 @@ namespace Demos
         public class OrdersContext : DbContext
         {
             private static readonly ILoggerFactory _loggerFactory = new LoggerFactory()
-                .AddConsole((s, l) => l == LogLevel.Information && !s.EndsWith("Connection"));
+                .AddConsole((s, l) => l == LogLevel.Information && s.EndsWith("Command"));
 
             public DbSet<Order> Orders { get; set; }
 
