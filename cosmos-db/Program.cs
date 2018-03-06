@@ -44,7 +44,7 @@ namespace Demos
                             },
                             new Post
                             {
-                                PostId = postId++,
+                                PostId = postId,
                                 Title = "Getting Started with ADO.NET"
                             }
                         }
