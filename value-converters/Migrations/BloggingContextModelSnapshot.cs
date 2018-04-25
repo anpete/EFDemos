@@ -1,5 +1,5 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+﻿
+
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -48,7 +48,7 @@ namespace Demos.Migrations
 
                         b.ToTable("Themes");
 
-                        b.SeedData(new { ThemeId = 1u, Name = "MSDN", TitleColor = "Red" }, new { ThemeId = 2u, Name = "TechNet", TitleColor = "Red" }, new { ThemeId = 3u, Name = "Personal", TitleColor = "LightBlue" });
+                        b.HasData(new { ThemeId = 1u, Name = "MSDN", TitleColor = "Red" }, new { ThemeId = 2u, Name = "TechNet", TitleColor = "Red" }, new { ThemeId = 3u, Name = "Personal", TitleColor = "LightBlue" });
                     });
 
             modelBuilder.Entity(
