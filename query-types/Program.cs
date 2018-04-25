@@ -1,8 +1,9 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+﻿
+
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace Demos
 {
@@ -14,6 +15,7 @@ namespace Demos
 
             using (var db = new OrdersContext())
             {
+
             }
         }
 
@@ -41,7 +43,7 @@ namespace Demos
                     db.SaveChanges();
 
                     db.Database.ExecuteSqlCommand(
-                        @"CREATE VIEW [OrderSummary] AS
+                        @"CREATE VIEW [OrderSummaries] AS
                             SELECT o.Id, o.Amount, p.Name AS ProductName, c.Name AS CustomerName
                             FROM Orders o
                             INNER JOIN Product p ON o.ProductId = p.Id
@@ -52,21 +54,13 @@ namespace Demos
 
         public class OrdersContext : DbContext
         {
-            private static readonly ILoggerFactory _loggerFactory = new LoggerFactory()
-                .AddConsole((s, l) => l == LogLevel.Information && s.EndsWith("Command"));
-
             public DbSet<Order> Orders { get; set; }
 
-            protected override void OnModelCreating(ModelBuilder modelBuilder)
-            {
-                // Configure a view type
-            }
 
             protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             {
                 optionsBuilder
-                    .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.ViewTypes;Trusted_Connection=True;ConnectRetryCount=0")
-                    .UseLoggerFactory(_loggerFactory);
+                    .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.ViewTypes;Trusted_Connection=True;ConnectRetryCount=0");
             }
         }
 

@@ -10,9 +10,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Demos.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    partial class BloggingContextModelSnapshot : ModelSnapshot
+    [Migration("20180425192120_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,7 +27,7 @@ namespace Demos.Migrations
 
                     b.Property<string>("BlogUrl");
 
-                    b.Property<long>("ThemeId");
+                    b.Property<int?>("ThemeId");
 
                     b.HasKey("BlogId");
 
@@ -37,7 +38,7 @@ namespace Demos.Migrations
 
             modelBuilder.Entity("Demos.Theme", b =>
                 {
-                    b.Property<long>("ThemeId")
+                    b.Property<int>("ThemeId")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name");
@@ -47,12 +48,6 @@ namespace Demos.Migrations
                     b.HasKey("ThemeId");
 
                     b.ToTable("Themes");
-
-                    b.HasData(
-                        new { ThemeId = 1L, Name = "MSDN", TitleColor = "Red" },
-                        new { ThemeId = 2L, Name = "TechNet", TitleColor = "Green" },
-                        new { ThemeId = 3L, Name = "Personal", TitleColor = "AliceBlue" }
-                    );
                 });
 
             modelBuilder.Entity("Demos.Blog", b =>

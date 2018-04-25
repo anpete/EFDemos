@@ -1,6 +1,5 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
-
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
@@ -14,12 +13,15 @@ namespace Demos.Migrations
                 name: "Themes",
                 columns: table => new
                 {
-                    ThemeId = table.Column<uint>(nullable: false)
+                    ThemeId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
                     TitleColor = table.Column<string>(nullable: true)
                 },
-                constraints: table => { table.PrimaryKey("PK_Themes", x => x.ThemeId); });
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Themes", x => x.ThemeId);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Blogs",
@@ -28,33 +30,18 @@ namespace Demos.Migrations
                     BlogId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     BlogUrl = table.Column<string>(nullable: true),
-                    ThemeId = table.Column<uint>(nullable: true)
+                    ThemeId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
-                    {
-                        table.PrimaryKey("PK_Blogs", x => x.BlogId);
-                        table.ForeignKey(
-                            name: "FK_Blogs_Themes_ThemeId",
-                            column: x => x.ThemeId,
-                            principalTable: "Themes",
-                            principalColumn: "ThemeId",
-                            onDelete: ReferentialAction.Restrict);
-                    });
-
-            migrationBuilder.InsertData(
-                table: "Themes",
-                columns: new[] { "ThemeId", "Name", "TitleColor" },
-                values: new object[] { 1u, "MSDN", "Red" });
-
-            migrationBuilder.InsertData(
-                table: "Themes",
-                columns: new[] { "ThemeId", "Name", "TitleColor" },
-                values: new object[] { 2u, "TechNet", "Red" });
-
-            migrationBuilder.InsertData(
-                table: "Themes",
-                columns: new[] { "ThemeId", "Name", "TitleColor" },
-                values: new object[] { 3u, "Personal", "LightBlue" });
+                {
+                    table.PrimaryKey("PK_Blogs", x => x.BlogId);
+                    table.ForeignKey(
+                        name: "FK_Blogs_Themes_ThemeId",
+                        column: x => x.ThemeId,
+                        principalTable: "Themes",
+                        principalColumn: "ThemeId",
+                        onDelete: ReferentialAction.Restrict);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Blogs_ThemeId",

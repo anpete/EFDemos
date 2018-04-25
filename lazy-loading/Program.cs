@@ -1,11 +1,9 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Demos
 {
@@ -21,7 +19,7 @@ namespace Demos
                 {
                     Console.WriteLine(blog.Url);
 
-                    if (!blog.Posts.Any()) // Access the Posts navigation property
+                    if (blog.Posts == null) // Access the Posts navigation property
                     {
                         Console.WriteLine("No posts!");
                     }
@@ -94,13 +92,16 @@ namespace Demos
         {
             optionsBuilder
                 .UseSqlServer(
-                    @"Server=(localdb)\mssqllocaldb;Database=Demo.LazyLoading;Trusted_Connection=True;ConnectRetryCount=0;")
-                .UseLazyLoadingProxies();
+                    @"Server=(localdb)\mssqllocaldb;Database=Demo.LazyLoading;Trusted_Connection=True;ConnectRetryCount=0;");
         }
     }
 
     public class Blog
     {
+        public Blog()
+        {
+        }
+
         public int BlogId { get; set; }
         public string Name { get; set; }
         public string Url { get; set; }
