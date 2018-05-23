@@ -85,18 +85,24 @@ namespace Demos
 
     public class BloggingContext : DbContext
     {
+        private static readonly ILoggerFactory _loggerFactory = new LoggerFactory()
+            .AddConsole((s, l) => l == LogLevel.Debug && s.EndsWith("Command"));
+
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Post> Posts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
+                //.UseLazyLoadingProxies()
+                .EnableSensitiveDataLogging()
+                .UseLoggerFactory(_loggerFactory)
                 .UseSqlServer(
                     @"Server=(localdb)\mssqllocaldb;Database=Demo.LazyLoading;Trusted_Connection=True;ConnectRetryCount=0;");
         }
     }
 
-    public class Blog
+    public sealed class Blog
     {
         public Blog()
         {
@@ -106,7 +112,26 @@ namespace Demos
         public string Name { get; set; }
         public string Url { get; set; }
 
-        public ICollection<Post> Posts { get; set; }
+        private readonly Action<object, string> _lazyLoader;
+
+        private Blog(Action<object, string> lazyLoader)
+        {
+            _lazyLoader = lazyLoader;
+        }
+
+        private ICollection<Post> _posts;
+
+        public ICollection<Post> Posts
+        {
+            get
+            {
+                _lazyLoader?.Invoke(this, nameof(Posts));
+
+                return _posts;
+            }
+
+            set => _posts = value;
+        }
     }
 
     public class Post

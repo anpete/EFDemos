@@ -10,9 +10,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Demos.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    partial class BloggingContextModelSnapshot : ModelSnapshot
+    [Migration("20180509233638_SeedData")]
+    partial class SeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,7 +50,7 @@ namespace Demos.Migrations
                     b.ToTable("Themes");
 
                     b.HasData(
-                        new { ThemeId = 1, Name = "MSDN", TitleColor = "AliceBlue" },
+                        new { ThemeId = 1, Name = "MSDN", TitleColor = "Red" },
                         new { ThemeId = 2, Name = "TechNet", TitleColor = "DarkCyan" },
                         new { ThemeId = 3, Name = "EF", TitleColor = "Purple" },
                         new { ThemeId = 4, Name = "Personal", TitleColor = "LightBlue" }

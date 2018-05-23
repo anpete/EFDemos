@@ -15,7 +15,16 @@ namespace Demos
 
             using (var db = new OrdersContext())
             {
-
+                foreach (var orderSummary 
+                    in db.OrderSummaries
+                            .FromSql(
+                                @"SELECT o.Id, o.Amount, p.Name AS ProductName, c.Name AS CustomerName
+                                  FROM Orders o
+                                  INNER JOIN Product p ON o.ProductId = p.Id
+                                  INNER JOIN Customer c ON o.CustomerId = c.Id"))
+                {
+                    Console.WriteLine(orderSummary);
+                }
             }
         }
 
@@ -55,13 +64,23 @@ namespace Demos
         public class OrdersContext : DbContext
         {
             public DbSet<Order> Orders { get; set; }
-
+            public DbQuery<OrderSummary> OrderSummaries { get; set; }
 
             protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             {
                 optionsBuilder
                     .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Demo.ViewTypes;Trusted_Connection=True;ConnectRetryCount=0");
             }
+        }
+
+        public class OrderSummary
+        {
+            public int Amount { get; set; }
+            public string ProductName { get; set; }
+            public string CustomerName { get; set; }
+
+            public override string ToString() 
+                => $"{CustomerName} ordered {Amount} of {ProductName}";
         }
 
         public class Order

@@ -33,10 +33,15 @@ namespace Demos
             modelBuilder
                 .Entity<Theme>()
                 .HasData(
-                    new Theme { ThemeId = 1, Name = "MSDN", TitleColor = Color.AliceBlue.Name },
-                    new Theme { ThemeId = 2, Name = "TechNet", TitleColor = Color.DarkCyan.Name },
-                    new Theme { ThemeId = 3, Name = "EF", TitleColor = Color.Purple.Name },
-                    new Theme { ThemeId = 4, Name = "Personal", TitleColor = Color.LightBlue.Name });
+                    new Theme { ThemeId = 1, Name = "MSDN", TitleColor = Color.AliceBlue },
+                    new Theme { ThemeId = 2, Name = "TechNet", TitleColor = Color.DarkCyan },
+                    new Theme { ThemeId = 3, Name = "EF", TitleColor = Color.Purple },
+                    new Theme { ThemeId = 4, Name = "Personal", TitleColor = Color.LightBlue });
+
+            modelBuilder
+                .Entity<Theme>()
+                .Property(t => t.TitleColor)
+                .HasConversion(c => c.Name, s => Color.FromName(s));
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -56,6 +61,6 @@ namespace Demos
     {
         public ushort ThemeId { get; set; }
         public string Name { get; set; }
-        public string TitleColor { get; set; }
+        public Color TitleColor { get; set; }
     }
 }

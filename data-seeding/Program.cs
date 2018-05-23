@@ -46,6 +46,13 @@ namespace Demos
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder
+                .Entity<Theme>()
+                .HasData(
+                    new Theme { ThemeId = 1, Name = "MSDN", TitleColor = Color.AliceBlue.Name },
+                    new Theme { ThemeId = 2, Name = "TechNet", TitleColor = Color.DarkCyan.Name },
+                    new Theme { ThemeId = 3, Name = "EF", TitleColor = Color.Purple.Name },
+                    new Theme { ThemeId = 4, Name = "Personal", TitleColor = Color.LightBlue.Name });
 
         }
 
